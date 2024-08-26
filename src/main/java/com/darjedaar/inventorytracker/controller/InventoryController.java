@@ -12,11 +12,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.darjedaar.inventorytracker.model.Record;
+import com.darjedaar.inventorytracker.model.SaleRecord;
 import com.darjedaar.inventorytracker.service.InventoryTrackerService;
 
 
 @RestController
-@CrossOrigin("http://localhost:8081")
+@CrossOrigin("http://localhost:4200")
 public class InventoryController {
 	
 	@Autowired
@@ -30,6 +31,12 @@ public class InventoryController {
 	@PostMapping("/saveRecords")
     public void saveRecords(@RequestBody List<Record> records) throws Exception {
 		inventoryService.saveRecord(records);
+		inventoryService.updateExcel(records);
+	}
+	
+	@PostMapping("/saveSales")
+    public void saveSalesRecords(@RequestBody List<SaleRecord> records) throws Exception {
+		
 	}
 
 }

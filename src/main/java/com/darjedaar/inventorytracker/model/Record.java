@@ -3,8 +3,21 @@ package com.darjedaar.inventorytracker.model;
 import java.util.Date;
 import java.util.Objects;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@RedisHash("Record")
 public class Record {
 	
+	@Id
+    private String id;
 	private Date date;
     private Item item;
     private String comment;
