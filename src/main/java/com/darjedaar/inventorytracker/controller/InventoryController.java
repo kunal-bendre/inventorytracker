@@ -1,42 +1,47 @@
 package com.darjedaar.inventorytracker.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.darjedaar.inventorytracker.model.Record;
-import com.darjedaar.inventorytracker.model.SaleRecord;
-import com.darjedaar.inventorytracker.service.InventoryTrackerService;
-
+import com.darjedaar.inventorytracker.model.InventoryItem;
+import com.darjedaar.inventorytracker.model.PurchaseOrderRecord;
+import com.darjedaar.inventorytracker.service.InventoryService;
 
 @RestController
+@RequestMapping("/api/inventory")
 @CrossOrigin("http://localhost:4200")
 public class InventoryController {
-	
-	@Autowired
-	private InventoryTrackerService inventoryService;
-	
-	@GetMapping("/hello")
-	public ResponseEntity<String> hello() {
-		return new ResponseEntity<String>("Hello", HttpStatus.CREATED);
-	}
-	
-	@PostMapping("/saveRecords")
-    public void saveRecords(@RequestBody List<Record> records) throws Exception {
-		inventoryService.saveRecord(records);
-		inventoryService.updateExcel(records);
-	}
-	
-	@PostMapping("/saveSales")
-    public void saveSalesRecords(@RequestBody List<SaleRecord> records) throws Exception {
-		
-	}
 
+	@Autowired
+	private InventoryService inventoryService;
+
+	@PostMapping("/updateInventoryExcel")
+	public void updateInventoryExcel(@RequestBody List<InventoryItem> records) throws Exception {
+		inventoryService.updateInventoryExcel(records);
+	}
+	
+	@PostMapping("/saveInventoryRecords")
+	public List<InventoryItem> saveInventoryRecords(@RequestBody List<InventoryItem> records) throws Exception {
+		return inventoryService.updateInventoryOnUsage(records);
+	}
+	
+	@PostMapping("/update")
+	public List<InventoryItem> updateInventory(@RequestBody List<PurchaseOrderRecord> purchaseOrders) {
+		return inventoryService.updateInventoryOnPurchase(purchaseOrders);
+	}
+	
+	@GetMapping("/getInventoryByDate")
+	public List<InventoryItem> getInventoryByDate(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date){
+		return inventoryService.getInventoryByDate(date);
+	}
 }

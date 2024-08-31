@@ -1,22 +1,27 @@
 package com.darjedaar.inventorytracker.model;
 
+import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
+import jakarta.persistence.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Table;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+@Entity
+@Table(name = "SaleRecord")
+public class SaleRecord implements Serializable {
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@RedisHash("SaleRecord")
-public class SaleRecord {
-
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	@Id
-	private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 	private Date date;
 	private String menuItemName;
 	private Integer totalProduce;
@@ -24,29 +29,11 @@ public class SaleRecord {
 	private Integer fullPlateSale;
 	private Integer bucketSale;
 	private Integer kgSale;
+	private Integer wastage;
+	private Integer totalExpectedSales;
+	private Double totalActualSales;
+	private Double salesDiffrence;
 	private String comment;
-
-	public SaleRecord(String id, Date date, String menuItemName, Integer totalProduce, Integer halfPlateSale,
-			Integer fullPlateSale, Integer bucketSale, Integer kgSale, String comment) {
-		super();
-		this.id = id;
-		this.date = date;
-		this.menuItemName = menuItemName;
-		this.totalProduce = totalProduce;
-		this.halfPlateSale = halfPlateSale;
-		this.fullPlateSale = fullPlateSale;
-		this.bucketSale = bucketSale;
-		this.kgSale = kgSale;
-		this.comment = comment;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
 
 	public Date getDate() {
 		return date;
@@ -104,6 +91,38 @@ public class SaleRecord {
 		this.kgSale = kgSale;
 	}
 
+	public Integer getWastage() {
+		return wastage;
+	}
+
+	public void setWastage(Integer wastage) {
+		this.wastage = wastage;
+	}
+
+	public Integer getTotalExpectedSales() {
+		return totalExpectedSales;
+	}
+
+	public void setTotalExpectedSales(Integer totalExpectedSales) {
+		this.totalExpectedSales = totalExpectedSales;
+	}
+
+	public Double getTotalActualSales() {
+		return totalActualSales;
+	}
+
+	public void setTotalActualSales(Double totalActualSales) {
+		this.totalActualSales = totalActualSales;
+	}
+
+	public Double getSalesDiffrence() {
+		return salesDiffrence;
+	}
+
+	public void setSalesDiffrence(Double salesDiffrence) {
+		this.salesDiffrence = salesDiffrence;
+	}
+
 	public String getComment() {
 		return comment;
 	}
@@ -111,5 +130,29 @@ public class SaleRecord {
 	public void setComment(String comment) {
 		this.comment = comment;
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(bucketSale, comment, date, fullPlateSale, halfPlateSale, id, kgSale, menuItemName,
+				totalProduce);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SaleRecord other = (SaleRecord) obj;
+		return Objects.equals(bucketSale, other.bucketSale) && Objects.equals(comment, other.comment)
+				&& Objects.equals(date, other.date) && Objects.equals(fullPlateSale, other.fullPlateSale)
+				&& Objects.equals(halfPlateSale, other.halfPlateSale) && Objects.equals(id, other.id)
+				&& Objects.equals(kgSale, other.kgSale) && Objects.equals(menuItemName, other.menuItemName)
+				&& Objects.equals(totalProduce, other.totalProduce);
+	}
+	
+	
 
 }
