@@ -5,6 +5,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -34,22 +36,36 @@ public class PurchaseOrderRecord implements Serializable {
 	@Temporal(TemporalType.DATE)
     private Date date;
     
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)  // or EAGER depending on your use case
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)  // or EAGER depending on your use case
     @JoinColumn(name = "vendor_id")
     private VendorDetails vendor;
     
     @OneToMany(mappedBy = "purchaseOrderRecord", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<PurchaseItem> purchaseItem;
     
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)  // or EAGER depending on your use case
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)  // or EAGER depending on your use case
     @JoinColumn(name = "invoice_id")   // column name in PurchaseOrderRecord table
     private Invoice invoice;
+    
+    
+    public PurchaseOrderRecord() {
+		super();
+	}
 
-    public PurchaseOrderRecord(Date date, VendorDetails vendor, List<PurchaseItem> purchaseItem, Invoice invoice) {
+	public PurchaseOrderRecord(Date date, VendorDetails vendor, List<PurchaseItem> purchaseItem, Invoice invoice) {
         this.date = date;
         this.vendor = vendor;
         this.purchaseItem = purchaseItem;
         this.invoice = invoice;
+    }
+    
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     // Getters and Setters
@@ -75,6 +91,9 @@ public class PurchaseOrderRecord implements Serializable {
 
     public void setPurchaseItem(List<PurchaseItem> purchaseItem) {
         this.purchaseItem = purchaseItem;
+        for (PurchaseItem item : purchaseItem) {
+            item.setPurchaseOrderRecord(this); // Set the reference back to PurchaseOrderRecord
+        }
     }
 
     public Invoice getInvoice() {

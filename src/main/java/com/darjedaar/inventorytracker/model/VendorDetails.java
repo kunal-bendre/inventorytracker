@@ -25,6 +25,14 @@ public class VendorDetails implements Serializable {
 	private String pointOfContact;
 	private String phoneNumber;
 	private String address;
+	
+	public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
 	// Getters and Setters
 	public String getName() {

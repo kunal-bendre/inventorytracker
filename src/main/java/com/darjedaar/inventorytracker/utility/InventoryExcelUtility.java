@@ -56,7 +56,7 @@ public class InventoryExcelUtility extends ExcelUtility {
 		for (InventoryItem record : uniqueRecords) {
 			Row row = currentSheet.createRow(lastRow++);
 			row.createCell(0).setCellValue(record.getDate().toString());
-			row.createCell(1).setCellValue(record.getName());
+			row.createCell(1).setCellValue(record.getConsumable().getName());
 			row.createCell(2).setCellValue(record.getTotalUsage());
 			row.createCell(3).setCellValue(record.getTotalAvailableStock());
 		}

@@ -63,7 +63,7 @@ public class PurchaseExcelUtil extends ExcelUtility {
 			for(PurchaseItem orderItem : record.getPurchaseItem()) {
 				Row row = currentSheet.createRow(lastRow++);
 				row.createCell(0).setCellValue(record.getDate().toString());
-				row.createCell(1).setCellValue(orderItem.getName());
+				row.createCell(1).setCellValue(orderItem.getConsumable().getName());
 				row.createCell(2).setCellValue(orderItem.getQuantity());
 				row.createCell(3).setCellValue(orderItem.getUnitRate());
 				row.createCell(4).setCellValue(orderItem.getTotalPrice());

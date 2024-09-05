@@ -1,5 +1,6 @@
 package com.darjedaar.inventorytracker.controller;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -21,7 +22,7 @@ import com.darjedaar.inventorytracker.service.InventoryService;
 @RequestMapping("/api/inventory")
 @CrossOrigin("http://localhost:4200")
 public class InventoryController {
-
+	
 	@Autowired
 	private InventoryService inventoryService;
 
@@ -44,4 +45,11 @@ public class InventoryController {
 	public List<InventoryItem> getInventoryByDate(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date){
 		return inventoryService.getInventoryByDate(date);
 	}
+	
+	@PostMapping("/transferInventory")
+    public String transferInventory(@RequestParam("date") Date date) throws ParseException {
+        inventoryService.transferInventory(date);
+        return "Inventory transfer completed";
+    }
+	
 }

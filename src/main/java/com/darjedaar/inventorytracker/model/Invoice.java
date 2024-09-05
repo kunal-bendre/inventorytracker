@@ -1,12 +1,12 @@
 package com.darjedaar.inventorytracker.model;
 
-import jakarta.persistence.Id;
-
 import java.io.Serializable;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
@@ -22,10 +22,21 @@ public class Invoice implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String date;
+    
+    @Column(name = "invoice_number", unique = true, nullable = false)
     private String invoiceNumber;
+    
     private double invoiceAmount;
     private String invoiceStatus;
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+    
     // Getters and Setters
     public String getDate() {
         return date;

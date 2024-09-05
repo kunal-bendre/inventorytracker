@@ -4,12 +4,13 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "InventoryItem")
@@ -23,21 +24,40 @@ public class InventoryItem implements Serializable {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+	
+	@Temporal(TemporalType.DATE)
 	private Date date;
+	
+	private Consumables consumable;
+	
 	private String name;
     private int totalAvailableStock;
     private int totalUsage;
     
+    public Long getId() {
+        return id;
+    }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
     // Getters and Setters
 
     public String getName() {
-        return name;
-    }
+		return name;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Consumables getConsumable() {
+		return consumable;
+	}
+
+	public void setConsumable(Consumables consumable) {
+		this.consumable = consumable;
+	}
 
 	public Date getDate() {
 		return date;
@@ -65,7 +85,7 @@ public class InventoryItem implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(date, id, name, totalAvailableStock, totalUsage);
+		return Objects.hash(consumable, date, id, totalAvailableStock, totalUsage);
 	}
 
 	@Override
@@ -77,12 +97,10 @@ public class InventoryItem implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		InventoryItem other = (InventoryItem) obj;
-		return Objects.equals(date, other.date) && Objects.equals(id, other.id) && Objects.equals(name, other.name)
-				&& totalAvailableStock == other.totalAvailableStock && totalUsage == other.totalUsage;
+		return Objects.equals(consumable, other.consumable) && Objects.equals(date, other.date)
+				&& Objects.equals(id, other.id) && totalAvailableStock == other.totalAvailableStock
+				&& totalUsage == other.totalUsage;
 	}
 
 	
-
-   
-  
 }

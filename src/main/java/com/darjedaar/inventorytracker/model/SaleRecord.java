@@ -34,6 +34,14 @@ public class SaleRecord implements Serializable {
 	private Double totalActualSales;
 	private Double salesDiffrence;
 	private String comment;
+	
+	public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
 	public Date getDate() {
 		return date;

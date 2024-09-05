@@ -2,11 +2,15 @@ package com.darjedaar.inventorytracker.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.darjedaar.inventorytracker.model.MenuItem;
 import com.darjedaar.inventorytracker.model.SaleRecord;
+import com.darjedaar.inventorytracker.repository.MenuItemRepository;
 import com.darjedaar.inventorytracker.repository.SalesRecordRepository;
 import com.darjedaar.inventorytracker.utility.SalesExcelUtility;
 
@@ -22,6 +26,9 @@ public class SalesService {
 	
 	@Autowired
 	private SalesExcelUtility salesExcelUtility;
+	
+	@Autowired
+	private MenuItemRepository menuItemRepository;
 	
 	private Integer calculateExpectedSales(Integer totalProduce) {
 		return totalProduce*KGTOFULL;
@@ -51,6 +58,16 @@ public class SalesService {
 
 	public List<SaleRecord> getSalesByPeriod(Date startDate, Date endDate) {
 		return saleRecordRepository.findSalesBetweenDates(startDate, endDate);
+	}
+
+	public MenuItem saveMenuItem(MenuItem menuItem) {
+		return menuItemRepository.save(menuItem);
+	}
+
+	public List<MenuItem> getAllMenuItem() {
+		return StreamSupport.stream(menuItemRepository.findAll().spliterator(), false)
+                .collect(Collectors.toList());
+
 	}
 
 }

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.darjedaar.inventorytracker.model.MenuItem;
 import com.darjedaar.inventorytracker.model.SaleRecord;
 import com.darjedaar.inventorytracker.service.SalesService;
 
@@ -42,4 +43,15 @@ public class SalesController {
 	    List<SaleRecord> sales = salesService.getSalesByPeriod(startDate,endDate);
 	    return ResponseEntity.ok(sales);
 	}
+	
+	@PostMapping("/createMenuItem")
+	public MenuItem createMenuItem(@RequestBody MenuItem menuItem) {
+		return salesService.saveMenuItem(menuItem);
+	}
+	
+	@GetMapping("/getAllMenuItem")
+	public List<MenuItem> getAllMenuItem(){
+		return salesService.getAllMenuItem();
+	}
+	
 }
