@@ -1,5 +1,8 @@
 package com.darjedaar.inventorytracker.service;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,12 +24,18 @@ public class SalaryAdvanceService {
 		if (employee != null) {
 			double remainingSalary = employee.getTotalSalary() - salaryAdvance.getAdvanceTaken();
 			salaryAdvance.setRemainingSalary(remainingSalary);
+			salaryAdvance.setTotalSalary(employee.getTotalSalary());
 			return salaryAdvanceRepository.save(salaryAdvance);
 		}
 		return null;
 	}
 
-	public SalaryAdvance getSalaryAdvanceById(Long id) {
-		return salaryAdvanceRepository.findById(id).orElse(null);
+	public List<SalaryAdvance> getSalaryAdvanceById(Long id) {
+		LocalDate now = LocalDate.now();
+
+		LocalDate startDate = now.withDayOfMonth(1);
+		LocalDate endDate = now.withDayOfMonth(now.lengthOfMonth());
+
+		return salaryAdvanceRepository.findSalaryAdvancesByEmployeeId(id,startDate,endDate);
 	}
 }

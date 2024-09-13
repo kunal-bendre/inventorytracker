@@ -1,6 +1,6 @@
 package com.darjedaar.inventorytracker.service;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -35,7 +35,7 @@ public class SalesService {
 	}
 	
 	private double calculateActualSales(Integer half, Integer full, Integer bucket,Integer kg,Integer wastage) {
-		return (half*HALFTOFULL) + full + (bucket*BUCKETTOFULL) + wastage;
+		return (half*HALFTOFULL) + full + (bucket*BUCKETTOFULL) - wastage;
 	}
 	
 	
@@ -46,7 +46,8 @@ public class SalesService {
 			Double difference = expectedSales - actualSales;
 			saleRecord.setTotalExpectedSales(expectedSales);
 			saleRecord.setTotalActualSales(actualSales);
-			saleRecord.setSalesDiffrence(difference);
+			saleRecord.setTotalIncome(actualSales * saleRecord.getMenuItem().getPrice());
+			saleRecord.setSalesDifference(difference);
 		}
 		
 		return saleRecordRepository.saveAll(saleRecords);
@@ -56,7 +57,7 @@ public class SalesService {
 		salesExcelUtility.updateSalesExcel(salesRecord);
 	}
 
-	public List<SaleRecord> getSalesByPeriod(Date startDate, Date endDate) {
+	public List<SaleRecord> getSalesByPeriod(LocalDate startDate, LocalDate endDate) {
 		return saleRecordRepository.findSalesBetweenDates(startDate, endDate);
 	}
 
@@ -68,6 +69,15 @@ public class SalesService {
 		return StreamSupport.stream(menuItemRepository.findAll().spliterator(), false)
                 .collect(Collectors.toList());
 
+	}
+
+	public Double sumTotalIncomeBetweenDates(LocalDate startDate, LocalDate endDate) {
+		return saleRecordRepository.sumTotalIncomeBetweenDates(startDate, endDate);
+	}
+
+	public List<MenuItem> getShowMenuItem() {
+		return StreamSupport.stream(menuItemRepository.findByShowMenuItemTrue().spliterator(), false)
+                .collect(Collectors.toList());
 	}
 
 }

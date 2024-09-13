@@ -1,13 +1,14 @@
 package com.darjedaar.inventorytracker.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
+import com.darjedaar.inventorytracker.model.Consumables;
 import com.darjedaar.inventorytracker.model.InventoryItem;
 import com.darjedaar.inventorytracker.model.PurchaseItem;
 import com.darjedaar.inventorytracker.model.PurchaseOrderRecord;
@@ -16,10 +17,10 @@ import com.darjedaar.inventorytracker.utility.InventoryExcelUtility;
 
 @Service
 public class InventoryService {
-	
+
 	@Autowired
 	private InventoryRecordRepository inventoryRepository;
-
+	
 	@Autowired
 	private InventoryExcelUtility inventoryExcelUtility;
 
@@ -32,18 +33,19 @@ public class InventoryService {
 		for (InventoryItem inventoryItem : inventoryItemList) {
 			InventoryItem itemInInventory = inventoryRepository.findByDateAndName(inventoryItem.getDate(),
 					inventoryItem.getConsumable().getName());
-			itemInInventory
-					.setTotalAvailableStock(itemInInventory.getTotalAvailableStock() - inventoryItem.getTotalUsage());
-			itemInInventory.setTotalUsage(inventoryItem.getTotalUsage());
-			updatedInventoryList.add(inventoryRepository.save(itemInInventory));
+			if (!ObjectUtils.isEmpty(itemInInventory)) {
+				itemInInventory.setTotalAvailableStock(
+						itemInInventory.getTotalAvailableStock() - inventoryItem.getTotalUsage());
+				itemInInventory.setTotalUsage(inventoryItem.getTotalUsage());
+				updatedInventoryList.add(inventoryRepository.save(itemInInventory));
+			}
 		}
-		
+
 		return updatedInventoryList;
 	}
 
-	public List<InventoryItem> updateInventoryOnPurchase(List<PurchaseOrderRecord> purchaseOrders) {
+	public List<InventoryItem> updateInventoryOnPurchase(PurchaseOrderRecord purchaseOrder) {
 		List<InventoryItem> updatedInventoryList = new ArrayList<InventoryItem>();
-		for (PurchaseOrderRecord purchaseOrder : purchaseOrders) {
 			List<PurchaseItem> purchaseItems = purchaseOrder.getPurchaseItem();
 
 			for (PurchaseItem item : purchaseItems) {
@@ -61,26 +63,21 @@ public class InventoryService {
 					newPurchaseForDate.setTotalUsage(0);
 					updatedInventoryList.add(inventoryRepository.save(newPurchaseForDate));
 				}
-			}
-
 		}
-		
+
 		return updatedInventoryList;
 	}
 
-	public List<InventoryItem> getInventoryByDate(Date date) {
+	public List<InventoryItem> getInventoryByDate(LocalDate date) {
 		return inventoryRepository.findByDate(date);
 	}
 
-	public List<InventoryItem> transferInventory(Date date) {
+	public List<InventoryItem> transferInventory(LocalDate date) {
 		List<InventoryItem> transferedInventory = new ArrayList<>();
 		List<InventoryItem> remaningInventory = getInventoryByDate(date);
-		Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.DAY_OF_MONTH, 1);
-        Date newDate = calendar.getTime();
-        
-		for(InventoryItem remaningItem : remaningInventory) {
+		LocalDate newDate = date.plusDays(1);
+
+		for (InventoryItem remaningItem : remaningInventory) {
 			InventoryItem nextDayRecord = new InventoryItem();
 			nextDayRecord.setDate(newDate);
 			nextDayRecord.setConsumable(remaningItem.getConsumable());
@@ -89,6 +86,17 @@ public class InventoryService {
 			transferedInventory.add(inventoryRepository.save(nextDayRecord));
 		}
 		return transferedInventory;
+	}
+
+	public List<Consumables> getAllConsumables(LocalDate date) {
+		List<Consumables> availableConsumablesInInventory = new ArrayList<>();
+		List<InventoryItem> remaningInventory = getInventoryByDate(date);
+		for(InventoryItem item : remaningInventory) {
+			if(item.getTotalAvailableStock() > 0) {
+				availableConsumablesInInventory.add(item.getConsumable());
+			}
+		}
+		return availableConsumablesInInventory;
 	}
 
 }

@@ -1,6 +1,6 @@
 package com.darjedaar.inventorytracker.controller;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +38,8 @@ public class SalesController {
 	
 	@GetMapping("/sales-history")
 	public ResponseEntity<List<SaleRecord>> getSalesHistory(
-	        @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
-	        @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate) {
+	        @RequestParam("startDate") @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate startDate,
+	        @RequestParam("endDate") @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate endDate) {
 	    List<SaleRecord> sales = salesService.getSalesByPeriod(startDate,endDate);
 	    return ResponseEntity.ok(sales);
 	}
@@ -53,5 +53,11 @@ public class SalesController {
 	public List<MenuItem> getAllMenuItem(){
 		return salesService.getAllMenuItem();
 	}
+	
+	@GetMapping("/getShowMenuItem")
+	public List<MenuItem> getShowMenuItem(){
+		return salesService.getShowMenuItem();
+	}
+	
 	
 }

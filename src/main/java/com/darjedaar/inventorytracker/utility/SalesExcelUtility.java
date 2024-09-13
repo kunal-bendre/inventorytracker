@@ -3,7 +3,6 @@ package com.darjedaar.inventorytracker.utility;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -58,13 +57,13 @@ public class SalesExcelUtility extends ExcelUtility {
 		return (half*HALFTOFULL) + full + (bucket*BUCKETTOFULL) + wastage;
 	}
 
-	public void updateSalesExcel(List<SaleRecord> SaleRecords) {
+	public void updateSalesExcel(List<SaleRecord> salesRecord) {
 
-		List<SaleRecord> uniqueSaleRecords = filterDuplicates(SaleRecords);
-		String year = calculateYear(SaleRecords.get(0).getDate());
+		List<SaleRecord> uniqueSaleRecords = filterDuplicates(salesRecord);
+		String year = calculateYear(salesRecord.get(0).getDate());
 
 		Workbook workbook = getWorkbook(year);
-		Sheet currentSheet = getSheet(workbook, calculateMonth(SaleRecords.get(0).getDate()));
+		Sheet currentSheet = getSheet(workbook, calculateMonth(salesRecord.get(0).getDate()));
 		addHeaders(currentSheet);
 
 		int lastRow = currentSheet.getLastRowNum() + 1;
@@ -78,7 +77,7 @@ public class SalesExcelUtility extends ExcelUtility {
 			Double difference = expectedSales - actualSales;
 			Row row = currentSheet.createRow(lastRow++);
 			row.createCell(0).setCellValue(saleRecord.getDate().toString());
-			row.createCell(1).setCellValue(saleRecord.getMenuItemName());
+			row.createCell(1).setCellValue(saleRecord.getMenuItem().getName());
 			row.createCell(2).setCellValue(saleRecord.getTotalProduce());
 			row.createCell(3).setCellValue(saleRecord.getHalfPlateSale());
 			row.createCell(4).setCellValue(saleRecord.getFullPlateSale());

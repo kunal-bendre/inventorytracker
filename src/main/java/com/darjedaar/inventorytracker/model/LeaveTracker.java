@@ -1,7 +1,8 @@
 package com.darjedaar.inventorytracker.model;
 
-import java.util.Date;
+import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.CascadeType;
@@ -22,20 +23,21 @@ public class LeaveTracker {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.DETACH)
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JsonBackReference
     private Employee employee;
 
     @Temporal(TemporalType.DATE)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
-    private Date appliedDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy",timezone = "UTC")
+    private LocalDate appliedDate;
     
     @Temporal(TemporalType.DATE)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
-    private Date startDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy",timezone = "UTC")
+    private LocalDate startDate;
     
     @Temporal(TemporalType.DATE)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
-    private Date endDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy",timezone = "UTC")
+    private LocalDate endDate;
     
     private String reason;
 
@@ -57,11 +59,11 @@ public class LeaveTracker {
 		this.employee = employee;
 	}
 
-	public Date getDate() {
+	public LocalDate getDate() {
 		return appliedDate;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(LocalDate date) {
 		this.appliedDate = date;
 	}
 
@@ -81,27 +83,27 @@ public class LeaveTracker {
 		this.days = days;
 	}
 
-	public Date getAppliedDate() {
+	public LocalDate getAppliedDate() {
 		return appliedDate;
 	}
 
-	public void setAppliedDate(Date appliedDate) {
+	public void setAppliedDate(LocalDate appliedDate) {
 		this.appliedDate = appliedDate;
 	}
 
-	public Date getStartDate() {
+	public LocalDate getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(Date startDate) {
+	public void setStartDate(LocalDate startDate) {
 		this.startDate = startDate;
 	}
 
-	public Date getEndDate() {
+	public LocalDate getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(Date endDate) {
+	public void setEndDate(LocalDate endDate) {
 		this.endDate = endDate;
 	}
 

@@ -1,13 +1,18 @@
 package com.darjedaar.inventorytracker.model;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -26,11 +31,13 @@ public class InventoryItem implements Serializable {
     private Long id;
 	
 	@Temporal(TemporalType.DATE)
-	private Date date;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy",timezone = "UTC")
+	private LocalDate date;
 	
+	@ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "consumable_id", referencedColumnName = "id")
 	private Consumables consumable;
 	
-	private String name;
     private int totalAvailableStock;
     private int totalUsage;
     
@@ -41,15 +48,6 @@ public class InventoryItem implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-    // Getters and Setters
-
-    public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
 
 	public Consumables getConsumable() {
 		return consumable;
@@ -59,11 +57,11 @@ public class InventoryItem implements Serializable {
 		this.consumable = consumable;
 	}
 
-	public Date getDate() {
+	public LocalDate getDate() {
 		return date;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(LocalDate date) {
 		this.date = date;
 	}
 

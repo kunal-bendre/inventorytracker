@@ -1,6 +1,6 @@
 package com.darjedaar.inventorytracker.service;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -32,7 +32,7 @@ public class PurchaseService {
 	@Autowired
 	private PurchaseExcelUtil purchaseExcelUtil;
 
-	final String uri = "http://localhost:8081/darjedaar/api/inventory/update";
+	final String uri = "http://localhost:8080/inventory-tracker/api/inventory/update";
 
 	@Autowired
 	private ConsumableRepository consumableRepository;
@@ -42,19 +42,17 @@ public class PurchaseService {
 	}
 
 	@SuppressWarnings("unchecked")
-	private List<InventoryItem> updateInventory(List<PurchaseOrderRecord> records) {
+	private List<InventoryItem> updateInventory(PurchaseOrderRecord record) {
 		RestTemplate restTemplate = new RestTemplate();
-		return restTemplate.postForObject(uri, records, List.class);
+		return restTemplate.postForObject(uri, record, List.class);
 	}
 
-	public List<InventoryItem> savePurchaseOrderRecords(List<PurchaseOrderRecord> records) {
-		for (PurchaseOrderRecord record : records) {
-			for (PurchaseItem item : record.getPurchaseItem()) {
-				item.setPurchaseOrderRecord(record); // Maintain the bidirectional relationship
-			}
-			purchaseOrderRepository.save(record); // Save the purchase order record (cascade will save items)
+	public List<InventoryItem> savePurchaseOrderRecords(PurchaseOrderRecord record) {
+		for (PurchaseItem item : record.getPurchaseItem()) {
+			item.setPurchaseOrderRecord(record); // Maintain the bidirectional relationship
 		}
-		return updateInventory(records);
+		purchaseOrderRepository.save(record); // Save the purchase order record (cascade will save items)
+		return updateInventory(record);
 	}
 
 	public Consumables addConsumable(Consumables consumable) {
@@ -73,7 +71,7 @@ public class PurchaseService {
 		return StreamSupport.stream(vendorRepository.findAll().spliterator(), false).collect(Collectors.toList());
 	}
 
-	public List<PurchaseOrderRecord> getPurchaseHistory(Date startDate, Date endDate) {
+	public List<PurchaseOrderRecord> getPurchaseHistory(LocalDate startDate, LocalDate endDate) {
 		return purchaseOrderRepository.findPurchaseBetweenDates(startDate, endDate);
 	}
 
@@ -84,4 +82,7 @@ public class PurchaseService {
 		return purchaseOrderRepository.save(purchaseOrder);
 	}
 
+	public Double sumInvoiceAmountForPaidInvoicesBetweenDates(LocalDate startDate, LocalDate endDate) {
+		return purchaseOrderRepository.sumInvoiceAmountForPaidInvoicesBetweenDates(startDate, endDate);
+	}
 }

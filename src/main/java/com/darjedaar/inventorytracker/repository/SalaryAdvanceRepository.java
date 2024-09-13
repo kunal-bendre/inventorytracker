@@ -1,9 +1,19 @@
 package com.darjedaar.inventorytracker.repository;
 
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 import com.darjedaar.inventorytracker.model.SalaryAdvance;
 
 public interface SalaryAdvanceRepository extends CrudRepository<SalaryAdvance, Long> {
-    // Additional query methods can be defined here if needed
+
+	@Query("SELECT s FROM SalaryAdvance s WHERE s.employee.id = :employeeId AND " +
+			"s.date >= :startOfMonth AND s.date <= :endOfMonth")
+	List<SalaryAdvance> findSalaryAdvancesByEmployeeId(@Param("employeeId") Long employeeId, 
+            @Param("startOfMonth") LocalDate startOfMonth, 
+            @Param("endOfMonth") LocalDate endOfMonth);
 }

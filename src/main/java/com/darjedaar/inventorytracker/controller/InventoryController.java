@@ -1,7 +1,7 @@
 package com.darjedaar.inventorytracker.controller;
 
 import java.text.ParseException;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.darjedaar.inventorytracker.model.Consumables;
 import com.darjedaar.inventorytracker.model.InventoryItem;
 import com.darjedaar.inventorytracker.model.PurchaseOrderRecord;
 import com.darjedaar.inventorytracker.service.InventoryService;
@@ -37,19 +38,24 @@ public class InventoryController {
 	}
 	
 	@PostMapping("/update")
-	public List<InventoryItem> updateInventory(@RequestBody List<PurchaseOrderRecord> purchaseOrders) {
-		return inventoryService.updateInventoryOnPurchase(purchaseOrders);
+	public List<InventoryItem> updateInventory(@RequestBody PurchaseOrderRecord purchaseOrder) {
+		return inventoryService.updateInventoryOnPurchase(purchaseOrder);
 	}
 	
 	@GetMapping("/getInventoryByDate")
-	public List<InventoryItem> getInventoryByDate(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date){
+	public List<InventoryItem> getInventoryByDate(@RequestParam("date") @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate date){
 		return inventoryService.getInventoryByDate(date);
 	}
 	
 	@PostMapping("/transferInventory")
-    public String transferInventory(@RequestParam("date") Date date) throws ParseException {
+    public String transferInventory(@RequestParam("date") @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate date) throws ParseException {
         inventoryService.transferInventory(date);
         return "Inventory transfer completed";
     }
+	
+	@GetMapping("/getAvailableConsumables")
+	public List<Consumables> getAvailableConsumables(@RequestParam("date") @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate date){
+		return inventoryService.getAllConsumables(date);
+	}
 	
 }

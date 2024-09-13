@@ -2,6 +2,8 @@ package com.darjedaar.inventorytracker.model;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,6 +21,9 @@ public class Consumables implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@Column(unique = true) 
+	private String name;
+
 	public Long getId() {
         return id;
     }
@@ -26,10 +31,7 @@ public class Consumables implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-	
-	@Column(unique = true) 
-	private String name;
-
+    
 	public String getName() {
 		return name;
 	}

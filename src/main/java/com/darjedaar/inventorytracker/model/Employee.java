@@ -1,8 +1,11 @@
 package com.darjedaar.inventorytracker.model;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,6 +14,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "employee")
@@ -24,24 +29,28 @@ public class Employee implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long employeeId;
-	
+
 	private String name;
-	
-	private Date joiningDate;
-	
+
+	@Temporal(TemporalType.DATE)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy",timezone = "UTC")
+	private LocalDate joiningDate;
+
 	private int age;
-	
+
 	@Column(nullable = false, unique = true)
 	private String aadharCardNumber;
-	
+
 	private double totalSalary;
-	
+
 	private String position;
 
 	@OneToMany(mappedBy = "employee")
+	@JsonManagedReference
 	private List<SalaryAdvance> salaryAdvances;
-	
+
 	@OneToMany(mappedBy = "employee")
+	@JsonManagedReference
 	private List<LeaveTracker> leaves;
 
 	public Long getEmployeeId() {
@@ -68,11 +77,11 @@ public class Employee implements Serializable {
 		this.age = age;
 	}
 
-	public Date getJoiningDate() {
+	public LocalDate getJoiningDate() {
 		return joiningDate;
 	}
 
-	public void setJoiningDate(Date joiningDate) {
+	public void setJoiningDate(LocalDate joiningDate) {
 		this.joiningDate = joiningDate;
 	}
 

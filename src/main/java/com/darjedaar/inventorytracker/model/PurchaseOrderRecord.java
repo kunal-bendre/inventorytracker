@@ -2,9 +2,10 @@ package com.darjedaar.inventorytracker.model;
 
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
@@ -34,13 +35,14 @@ public class PurchaseOrderRecord implements Serializable {
     private Long id;
 	
 	@Temporal(TemporalType.DATE)
-    private Date date;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy",timezone = "UTC")
+    private LocalDate date;
     
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)  // or EAGER depending on your use case
     @JoinColumn(name = "vendor_id")
     private VendorDetails vendor;
     
-    @OneToMany(mappedBy = "purchaseOrderRecord", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "purchaseOrderRecord", cascade = CascadeType.PERSIST, orphanRemoval = true)
     @JsonManagedReference
     private List<PurchaseItem> purchaseItem;
     
@@ -53,7 +55,7 @@ public class PurchaseOrderRecord implements Serializable {
 		super();
 	}
 
-	public PurchaseOrderRecord(Date date, VendorDetails vendor, List<PurchaseItem> purchaseItem, Invoice invoice) {
+	public PurchaseOrderRecord(LocalDate date, VendorDetails vendor, List<PurchaseItem> purchaseItem, Invoice invoice) {
         this.date = date;
         this.vendor = vendor;
         this.purchaseItem = purchaseItem;
@@ -69,11 +71,11 @@ public class PurchaseOrderRecord implements Serializable {
     }
 
     // Getters and Setters
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

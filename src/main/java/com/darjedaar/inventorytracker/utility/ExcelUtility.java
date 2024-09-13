@@ -5,7 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
 
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -45,13 +45,13 @@ public class ExcelUtility {
 		return sheet;
 	}
 	
-	protected String calculateMonth(Date date) {
+	protected String calculateMonth(LocalDate date) {
 		SimpleDateFormat sdfm = new SimpleDateFormat("MMMM");
 		String month = sdfm.format(date);
 		return month;
 	}
 	
-	protected String calculateYear(Date date) {
+	protected String calculateYear(LocalDate date) {
 		SimpleDateFormat sdfy = new SimpleDateFormat("YYYY");
 		String year = sdfy.format(date);
 		return year;

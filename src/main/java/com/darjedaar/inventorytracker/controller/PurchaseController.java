@@ -1,6 +1,6 @@
 package com.darjedaar.inventorytracker.controller;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.darjedaar.inventorytracker.model.Consumables;
 import com.darjedaar.inventorytracker.model.PurchaseOrderRecord;
 import com.darjedaar.inventorytracker.model.VendorDetails;
 import com.darjedaar.inventorytracker.service.PurchaseService;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -28,7 +28,7 @@ public class PurchaseController {
 	private PurchaseService purchaseService;
 	
 	@PostMapping("/savePurchaseRecords")
-	public void savePurchaseOrderRecords(@RequestBody List<PurchaseOrderRecord> records) throws Exception {
+	public void savePurchaseOrderRecords(@RequestBody PurchaseOrderRecord records) throws Exception {
 		purchaseService.savePurchaseOrderRecords(records);
 	}
 	
@@ -59,8 +59,8 @@ public class PurchaseController {
 	
 	@GetMapping("/getPurchaseHistory")
 	public List<PurchaseOrderRecord> getPurchaseHistory(
-	        @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
-	        @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate) {
+	        @RequestParam("startDate") @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate startDate,
+	        @RequestParam("endDate") @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate endDate) {
 		return purchaseService.getPurchaseHistory(startDate,endDate);
 	}
 	

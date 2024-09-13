@@ -1,15 +1,27 @@
 package com.darjedaar.inventorytracker.model;
 
-public class TransferInventoryRequest {
+import java.io.Serializable;
+import java.time.LocalDate;
 
-	private String date;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+
+public class TransferInventoryRequest implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	@Temporal(TemporalType.DATE)
+	private LocalDate date;
 
     // Getters and Setters
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 }

@@ -1,5 +1,8 @@
 package com.darjedaar.inventorytracker.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,6 +22,10 @@ public class MenuItem {
 	private String name;
 	
 	private Integer price;
+	
+	@Column(name="show_menuitem")
+	@JsonIgnore
+	private Boolean showMenuItem;
 
 	public Long getId() {
 		return id;
@@ -51,7 +58,13 @@ public class MenuItem {
 	public void setPrice(Integer price) {
 		this.price = price;
 	}
-	
-	
-	
+
+	public Boolean getShowMenuItem() {
+		return showMenuItem;
+	}
+
+	public void setShowMenuItem(Boolean showMenuItem) {
+		this.showMenuItem = showMenuItem;
+	}
+		
 }

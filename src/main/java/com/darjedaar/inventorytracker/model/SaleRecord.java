@@ -1,14 +1,21 @@
 package com.darjedaar.inventorytracker.model;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.util.Objects;
+import java.time.LocalDate;
 
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "SaleRecord")
@@ -22,8 +29,15 @@ public class SaleRecord implements Serializable {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-	private Date date;
-	private String menuItemName;
+	
+	@Temporal(TemporalType.DATE)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy",timezone = "UTC")
+	private LocalDate date;
+	
+	@ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "menuitem_id", referencedColumnName = "id")
+	private MenuItem menuItem;
+	
 	private Integer totalProduce;
 	private Integer halfPlateSale;
 	private Integer fullPlateSale;
@@ -32,7 +46,11 @@ public class SaleRecord implements Serializable {
 	private Integer wastage;
 	private Integer totalExpectedSales;
 	private Double totalActualSales;
-	private Double salesDiffrence;
+	private Double salesDifference;
+	
+	@JsonIgnore
+	private Double totalIncome;
+	
 	private String comment;
 	
 	public Long getId() {
@@ -43,20 +61,20 @@ public class SaleRecord implements Serializable {
         this.id = id;
     }
 
-	public Date getDate() {
+	public LocalDate getDate() {
 		return date;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(LocalDate date) {
 		this.date = date;
 	}
 
-	public String getMenuItemName() {
-		return menuItemName;
+	public MenuItem getMenuItem() {
+		return menuItem;
 	}
 
-	public void setMenuItemName(String menuItemName) {
-		this.menuItemName = menuItemName;
+	public void setMenuItemName(MenuItem menuItem) {
+		this.menuItem = menuItem;
 	}
 
 	public Integer getTotalProduce() {
@@ -123,12 +141,20 @@ public class SaleRecord implements Serializable {
 		this.totalActualSales = totalActualSales;
 	}
 
-	public Double getSalesDiffrence() {
-		return salesDiffrence;
+	public Double getSalesDifference() {
+		return salesDifference;
 	}
 
-	public void setSalesDiffrence(Double salesDiffrence) {
-		this.salesDiffrence = salesDiffrence;
+	public void setSalesDifference(Double salesDifference) {
+		this.salesDifference = salesDifference;
+	}
+
+	public Double getTotalIncome() {
+		return totalIncome;
+	}
+
+	public void setTotalIncome(Double totalIncome) {
+		this.totalIncome = totalIncome;
 	}
 
 	public String getComment() {
@@ -138,29 +164,4 @@ public class SaleRecord implements Serializable {
 	public void setComment(String comment) {
 		this.comment = comment;
 	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(bucketSale, comment, date, fullPlateSale, halfPlateSale, id, kgSale, menuItemName,
-				totalProduce);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		SaleRecord other = (SaleRecord) obj;
-		return Objects.equals(bucketSale, other.bucketSale) && Objects.equals(comment, other.comment)
-				&& Objects.equals(date, other.date) && Objects.equals(fullPlateSale, other.fullPlateSale)
-				&& Objects.equals(halfPlateSale, other.halfPlateSale) && Objects.equals(id, other.id)
-				&& Objects.equals(kgSale, other.kgSale) && Objects.equals(menuItemName, other.menuItemName)
-				&& Objects.equals(totalProduce, other.totalProduce);
-	}
-	
-	
-
 }
