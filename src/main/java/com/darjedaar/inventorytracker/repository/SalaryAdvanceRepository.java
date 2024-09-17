@@ -16,4 +16,7 @@ public interface SalaryAdvanceRepository extends CrudRepository<SalaryAdvance, L
 	List<SalaryAdvance> findSalaryAdvancesByEmployeeId(@Param("employeeId") Long employeeId, 
             @Param("startOfMonth") LocalDate startOfMonth, 
             @Param("endOfMonth") LocalDate endOfMonth);
+	
+	@Query("SELECT COALESCE(SUM(sa.advanceTaken), 0) FROM SalaryAdvance sa WHERE sa.employee.id = :employeeId")
+    double sumAdvanceTakenByEmployee(@Param("employeeId") Long employeeId);
 }

@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.darjedaar.inventorytracker.model.Employee;
 import com.darjedaar.inventorytracker.model.SalaryAdvance;
 import com.darjedaar.inventorytracker.repository.SalaryAdvanceRepository;
 
@@ -16,18 +15,12 @@ public class SalaryAdvanceService {
 	@Autowired
 	private SalaryAdvanceRepository salaryAdvanceRepository;
 
-	@Autowired
-	private EmployeeService employeeService;
-
 	public SalaryAdvance saveSalaryAdvance(SalaryAdvance salaryAdvance) {
-		Employee employee = employeeService.getEmployeeById(salaryAdvance.getEmployee().getEmployeeId());
-		if (employee != null) {
-			double remainingSalary = employee.getTotalSalary() - salaryAdvance.getAdvanceTaken();
-			salaryAdvance.setRemainingSalary(remainingSalary);
-			salaryAdvance.setTotalSalary(employee.getTotalSalary());
-			return salaryAdvanceRepository.save(salaryAdvance);
-		}
-		return null;
+        double totalAdvanceTakenSoFar = salaryAdvanceRepository.sumAdvanceTakenByEmployee(salaryAdvance.getEmployee().getEmployeeId());
+        double totalAdvanceTakenIncludingCurrent = totalAdvanceTakenSoFar + salaryAdvance.getAdvanceTaken();
+        double remainingSalary = salaryAdvance.getEmployee().getTotalSalary() - totalAdvanceTakenIncludingCurrent;
+        salaryAdvance.setRemainingSalary(remainingSalary);
+        return salaryAdvanceRepository.save(salaryAdvance);
 	}
 
 	public List<SalaryAdvance> getSalaryAdvanceById(Long id) {

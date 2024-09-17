@@ -34,9 +34,6 @@ public class SalaryAdvance {
     private LocalDate date;
 
     @Column(nullable = false)
-    private double totalSalary;
-
-    @Column(nullable = false)
     private double advanceTaken;
 
     @Column(nullable = false)
@@ -64,14 +61,6 @@ public class SalaryAdvance {
 
 	public void setDate(LocalDate date) {
 		this.date = date;
-	}
-
-	public double getTotalSalary() {
-		return totalSalary;
-	}
-
-	public void setTotalSalary(double totalSalary) {
-		this.totalSalary = totalSalary;
 	}
 
 	public double getAdvanceTaken() {

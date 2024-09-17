@@ -35,7 +35,7 @@ public class SalesService {
 	}
 	
 	private double calculateActualSales(Integer half, Integer full, Integer bucket,Integer kg,Integer wastage) {
-		return (half*HALFTOFULL) + full + (bucket*BUCKETTOFULL) - wastage;
+		return (half*HALFTOFULL) + full + (bucket*BUCKETTOFULL) + (kg*KGTOFULL) - wastage;
 	}
 	
 	
